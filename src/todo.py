@@ -1,8 +1,14 @@
 # todos = []
+
+def get_todos():
+    with open("src/files/todos.txt", "r") as file:
+        todos = file.readlines()
+    return todos
+
 while True:
     userAction = input("Type add, show, edit or exit: ")
     userAction = userAction.strip()
-    if "add" in userAction:
+    if userAction.startswith("add"):
         # todo = input("Enter todo: ") +"\n"
         todo = userAction[4:]
 
@@ -10,10 +16,11 @@ while True:
         # todos = file.readlines()
         # file.close()
 
-        with open("src/files/todos.txt", "r") as file:
-            todos = file.readlines()
+        # with open("src/files/todos.txt", "r") as file:
+        #     todos = file.readlines()
+        todos = get_todos()
 
-        todos.append(todo)
+        todos.append(todo + "\n")
 
         # file = open("src/files/todos.txt", "w")
         # file.writelines(todos)
@@ -29,31 +36,36 @@ while True:
         for index, item in enumerate(todos):
             item = item.strip("\n")
             print(f"{index+1} - {item}")
-    elif "edit" in userAction:
+    elif userAction.startswith("edit"):
         # number = input("Number of the todo to edit:")
+        try:
+            number = userAction[5:]
+            number = int(number) - 1
 
-        number = userAction[5:]
-        number = int(number) - 1
+            todos = get_todos()
 
-        with open("src/files/todos.txt", "r") as file:
-            todos = file.readlines()
-
-        existingTodo = todos[number]
-        newTodo = input("enter new todo: ")
-        todos[number] = newTodo + "\n"
-        # print("edit", existingTodo, todos[number])
-        with open("src/files/todos.txt", "w") as file:
-            file.writelines(todos)
+            existingTodo = todos[number]
+            newTodo = input("enter new todo: ")
+            todos[number] = newTodo + "\n"
+            # print("edit", existingTodo, todos[number])
+            with open("src/files/todos.txt", "w") as file:
+                file.writelines(todos)
+        except ValueError:
+            print("Your commands is not valid")
+            continue
     elif "complete" in userAction:
-        # number = input("Number of todo to complete")
-        number = userAction[9:]
-        number = int(number) - 1
-        with open("src/files/todos.txt", "r") as file:
-            todos = file.readlines()
-        todos.pop(number)
-        with open("src/files/todos.txt", "w") as file:
-            file.writelines(todos)
-        print("completed")
+        try:
+            # number = input("Number of todo to complete")
+            number = userAction[9:]
+            number = int(number) - 1
+            todos = get_todos()
+            todos.pop(number)
+            with open("src/files/todos.txt", "w") as file:
+                file.writelines(todos)
+            print("completed")
+        except ValueError:
+            print("Your commands is not valid")
+            continue
     elif  "exit" in userAction:
         break
     else:
